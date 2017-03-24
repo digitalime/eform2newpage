@@ -17,16 +17,15 @@ function eForm2newpage( &$fields )
 
       Example:
         [!eForm2newpage!]
-        [!eForm? &formid=`yourformid` &tpl=`yourtpl` &to=`youemailp  &eFormOnBeforeMailSent=`eForm2newpage`!]
+        [!eForm? &formid=`yourformid` &tpl=`yourtpl` &to=`youremail`  &eFormOnBeforeMailSent=`eForm2newpage`!]
 
       ---------------------------------------------------------------*/
 
       
-	// Bring needed resources into scope
+    // Bring needed resources into scope
       global $modx;
 
-
-	///CREATE THE DOCUMENT
+    ///CREATE THE DOCUMENT
 
         // Init our array
         $dbTable = array(); // key = DB Column; Value = Insert/Update value
@@ -40,12 +39,12 @@ function eForm2newpage( &$fields )
         $anothertvvalue = $fields[someothervalue];
 
 
-        $dbTable[type] = "reference";
+        $dbTable[type] = "document"; //"document" to create a page and "reference" to create a weblink
         $dbTable[contentType] = "text/html";
         $dbTable[pagetitle] = $modx->db->escape($pagetitle);
         $dbTable[longtitle] = $modx->db->escape($longtitle);
         $dbTable[description] = ""; //Something here if you want it
-        $dbTable[parent] = "4"; //Where should it go? Set 0 for root.
+        $dbTable[parent] = "0"; //Into which parent should it go? Set 0 for root.
         $dbTable[published] = "0"; //1 for published. 0 for unpublished.
         $dbTable[introtext] = "";
         $dbTable[content] =  $modx->db->escape($comments);
@@ -59,7 +58,7 @@ function eForm2newpage( &$fields )
         $dbTable[deleted] = "0";
         $dbTable[hidemenu] = "1";
 
-        $tablename = $modx->getFullTableName('site_content')
+        $tablename = $modx->getFullTableName('site_content');
 
         // Run the db insert query
         $dbQuery = $modx->db->insert( $dbTable, $tablename );      
@@ -69,7 +68,7 @@ $docid = $modx->db->getInsertId(); //So now we have the ID we just created - woo
 
 //Now lets do the TVs
 
-$tvtablename = $modx->getFullTableName('site_tmplvar_contentvalues')
+$tvtablename = $modx->getFullTableName('site_tmplvar_contentvalues');
 
  // Init our array
 
@@ -86,7 +85,4 @@ $dbTableTV[contentid] = $docid;
 $dbTableTV[value] = $modx->db->escape($anothertvvalue);
 $dbQuery = $modx->db->insert( $dbTableTV, $tvtablename );    // Run the db insert query
 
-	//return false;
-
 }
-?>
